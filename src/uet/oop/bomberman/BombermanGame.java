@@ -11,6 +11,8 @@ import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Sprite;
 
+import java.awt.Rectangle;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +25,14 @@ public class BombermanGame extends Application {
 
     private GraphicsContext gc;
     private Canvas canvas;
-    private List<Entity> entities = new ArrayList<>();
-    private List<Entity> stillObjects = new ArrayList<>();
+    public static List<Entity> entities = new ArrayList<>();
+    public static List<Entity> stillObjects = new ArrayList<>();
 
-    Entity bomberman;
+    public static Entity bomberman;
     Scene scene;
+
+//    int direction;
+
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
     }
@@ -60,15 +65,11 @@ public class BombermanGame extends Application {
 
         try {
             createMap();
-            System.out.println(1);
         } catch (IOException e) {
-            System.out.println(2);
+            System.out.println(4);
         }
 
-
-//        bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
-//        this.entities.add(bomberman);
-
+        System.out.println("End");
     }
 
     public void createMap() throws IOException {
@@ -94,11 +95,11 @@ public class BombermanGame extends Application {
                     object = new Portal(j, i, Sprite.portal.getFxImage());
                 } else if (line.charAt(j) == 'p') {
                     object = new Grass(j, i, Sprite.grass.getFxImage());
-                    bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
-                    this.entities.add(bomberman);
+                    bomberman = new Bomber(1, 1, 0, Sprite.player_right.getFxImage());
+//                    this.entities.add(bomberman);
                 } else if (line.charAt(j) == '1') {
                     object = new Grass(j, i, Sprite.grass.getFxImage());
-                    Entity balloon = new Balloon(j, i, Sprite.balloom_right1.getFxImage());
+                    Entity balloon = new Balloon(j, i,0, Sprite.balloom_right1.getFxImage());
                     this.entities.add(balloon);
 
                 } else if (line.charAt(j) == '2') {
@@ -115,37 +116,17 @@ public class BombermanGame extends Application {
         }
     }
 
-//    public static void addEntity(Entity entity) {
-//        this.entities.add(entity);
-//        System.out.println(1);
-//    }
-
     public void update() {
+
         entities.forEach(Entity::update);
-
-        scene.setOnKeyPressed(event -> {
-            if(event.getCode() == KeyCode.RIGHT) {
-                ((Bomber) bomberman).goRight();
-            }
-            if(event.getCode() == KeyCode.LEFT) {
-                ((Bomber) bomberman).goLeft();
-            }
-            if(event.getCode() == KeyCode.UP) {
-                ((Bomber) bomberman).goUp();
-            }
-            if(event.getCode() == KeyCode.DOWN) {
-                ((Bomber) bomberman).goDown();
-            }
-            System.out.println(((Bomber) bomberman).getX() +" " + ((Bomber) bomberman).getY());
-        });
-
-//        ((Bomber) bomberman).goRight();
+        ((Bomber) bomberman).run((Bomber) bomberman, scene);
     }
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         stillObjects.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
+        bomberman.render(gc);
     }
 
 
