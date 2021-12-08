@@ -15,6 +15,7 @@ import java.awt.Rectangle;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class BombermanGame extends Application {
@@ -23,12 +24,13 @@ public class BombermanGame extends Application {
     public static final int HEIGHT = 13;
     private final static String FILE_URL = "C:\\Users\\vuthe\\Desktop\\Bomberman\\res\\levels\\Level1.txt";
 
-    private GraphicsContext gc;
+    public static GraphicsContext gc;
     private Canvas canvas;
     public static List<Entity> entities = new ArrayList<>();
     public static List<Entity> stillObjects = new ArrayList<>();
-
-    public static Entity bomberman;
+//    List bom
+    public static List<Entity> bombs = new ArrayList<>();
+    public static Bomber bomberman;
     Scene scene;
 
 //    int direction;
@@ -57,6 +59,12 @@ public class BombermanGame extends Application {
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
+                try {
+                    Thread.sleep(10);
+
+                } catch (InterruptedException e) {
+
+                }
                 render();
                 update();
             }
@@ -69,7 +77,6 @@ public class BombermanGame extends Application {
             System.out.println(4);
         }
 
-        System.out.println("End");
     }
 
     public void createMap() throws IOException {
@@ -96,7 +103,6 @@ public class BombermanGame extends Application {
                 } else if (line.charAt(j) == 'p') {
                     object = new Grass(j, i, Sprite.grass.getFxImage());
                     bomberman = new Bomber(1, 1, 0, Sprite.player_right.getFxImage());
-//                    this.entities.add(bomberman);
                 } else if (line.charAt(j) == '1') {
                     object = new Grass(j, i, Sprite.grass.getFxImage());
                     Entity balloon = new Balloon(j, i,0, Sprite.balloom_right1.getFxImage());
@@ -117,17 +123,34 @@ public class BombermanGame extends Application {
     }
 
     public void update() {
-
         entities.forEach(Entity::update);
         ((Bomber) bomberman).run((Bomber) bomberman, scene);
+
+//        update bom
+        bombs.forEach(Entity::update);
+//        Duyệt list bombs để cái nào hết tgian thì xóa
+       // khong lam nhu nay duoc dung iterator ay
+//        public void destroyBomb() {
+        for (Iterator<Entity> iter = bombs.iterator(); iter.hasNext(); ) {
+            Entity bomb = iter.next();
+            if (((Bomb) bomb).getTime() == 0) iter.remove();
+        }
+//        }
+//        for (Entity e: bombs) {
+//            if (((Bomb) e).getTime() == 0) {
+//                System.out.println(((Bomb) e).getTime());
+//                bombs.remove(e);
+//                System.out.println(1);
+//            }
+//        }
+
     }
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         stillObjects.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
+        bombs.forEach(g -> g.render(gc));
         bomberman.render(gc);
     }
-
-
 }

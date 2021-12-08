@@ -35,8 +35,8 @@ public class Balloon extends Entity {
 
     public void run(Balloon balloon) {
         int direc = balloon.getDirection();
-        System.out.println(direc);
-        if (!super.checkCollision(balloon, direc, BombermanGame.stillObjects)) {
+//        System.out.println(direc);
+        if (!super.checkCollision(balloon, direc, BombermanGame.stillObjects, SPEED)) {
             if (direction == 0) move(0);
             if (direction == 1) move(1);
             if (direction == 2) move(2);
@@ -51,7 +51,7 @@ public class Balloon extends Entity {
             } else {
                 balloon.direction = 1;
             }
-            System.out.println("else");
+//            System.out.println("else");
         }
     }
 
